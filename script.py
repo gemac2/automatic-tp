@@ -34,6 +34,26 @@ def search_ticks():
 
     return ticks
 
+def set_price_for_exchanges(currency_name, buyback_price):
+    price = ""
+    if currency_name in ["BTCUSDT", "NMRUSDT", "TRBUSDT", "NEOUSDT"]:
+        price = "{:.1f}".format(buyback_price)
+    elif currency_name in ["ETHUSDT", "UNFIUSDT", "METISUSDT"]:
+        price = "{:.2f}".format(buyback_price)
+    elif currency_name in ["LPTUSDT", "LINKUSDT", "ETHFIUSDT", "ENSUSDT", "AUCTIONUSDT", "EOSUSDT", "ALICEUSDT", "UNIUSDT", "FILUSDT", "UMAUSDT", "OMNIUSDT", "IOUSDT", "AVAXUSDT", "ORDIUSDT", "ARUSDT", "ZROUSDT", "ZENUSDT", "BONDUSDT"]:
+        price = "{:.3f}".format(buyback_price)
+    elif currency_name in ["AMBUSDT", "GALAUSDT", "XRPUSDT", "XVGUSDT", "NOTUSDT", "JASMYUSDT", "KEYUSDT", "TLMUSDT", "CKBUSDT", "HOTUSDT", "INJUSDT", "MEWUSDT", "TURBOUSDT"]:
+        price = "{:.6f}".format(buyback_price)
+    elif currency_name in ["1000FLOKIUSDT", "VETUSDT", "STMXUSDT", "1000FLOKIUSDT", "LINAUSDT", "OMUSDT", "KASUSDT", "1000RATSUSDT", "RIFUSDT", "1000LUNCUSDT", "CFXUSDT", "ONGUSDT", "1000RATSUSDT", "1000LUNCUSDT", "TOKENUSDT", "ASTRUSDT", "OMUSDT"]:
+        price = "{:.5f}".format(buyback_price)
+    elif currency_name in ["LEVERUSDT", "1000PEPEUSDT", "SPELLUSDT"]:
+        price = "{:.7f}".format(buyback_price)
+    else:
+        price = "{:.4f}".format(buyback_price)
+    
+    return price
+    
+
 def qty_step(symbol, price):
     futures_ticks = search_ticks()
     if symbol not in futures_ticks:
@@ -45,12 +65,32 @@ def qty_step(symbol, price):
         if info['symbol'] == symbol:
             step_size = float(info['filters'][2]['stepSize'])
             qty = (float(price) / step_size) * step_size
-            return qty
+            format_price = set_price_for_exchanges(symbol, qty)
+            return format_price
     return None
 
+def cancel_all_orders(symbol):
+    try:
+        orders = client.futures_get_open_orders(symbol=symbol)
+        for order in orders:
+            client.futures_cancel_order(symbol=symbol, orderId=order['orderId'])
+        print(f"All pending orders for {symbol} have been canceled.")
+    except Exception as e:
+        print(f"Error while canceling orders: {e}")
+
 def cancel_take_profit(symbol, orderid):
-    print('CANCELING TAKE PROFIT')
-    client.cancel_order(symbol=symbol, orderId=orderid)
+    try:
+        # Check if the order still exists before attempting to cancel it
+        orders = client.futures_get_open_orders(symbol=symbol)
+        order_ids = [order['orderId'] for order in orders]
+        if orderid in order_ids:
+            print('CANCELING TAKE PROFIT')
+            client.futures_cancel_order(symbol=symbol, orderId=orderid)
+        else:
+            print('Order already executed or canceled, no need to cancel again.')
+    except Exception as e:
+        print(f"Error while canceling take profit order: {e}")
+
 
 def set_take_profit(symbol, price, position_side, qty):
     price = qty_step(symbol, price)
@@ -60,6 +100,8 @@ def set_take_profit(symbol, price, position_side, qty):
         side = 'SELL'
     else:
         side = 'BUY'
+        qty = qty * -1
+    
 
     # PLACE TAKE PROFIT ORDER
     order = client.futures_create_order(
@@ -69,7 +111,7 @@ def set_take_profit(symbol, price, position_side, qty):
         type="LIMIT",
         timeInForce="GTC",
         quantity=qty,
-        price=str(price),
+        price=price,
     )
 
     order_id = order['orderId']
@@ -81,10 +123,12 @@ while True:
         if state:
             # Open Positions
             positions = client.futures_position_information(symbol=symbol)
-            if len(positions) > 0:
+            if float(positions[0]['entryPrice']) != 0.0 or float(positions[1]['entryPrice']) != 0.0:
                 entry_price = float(positions[0]['entryPrice'])
+                if entry_price == 0.0:
+                    entry_price = float(positions[1]['entryPrice'])
                 take_price = 0
-                if positions[0]['positionSide'] == 'LONG':
+                if positions[0]['positionSide'] == 'LONG' and float(positions[0]['entryPrice']) != 0.0:
                     take_price = ((entry_price * take_profit)/100)+entry_price
                 else:
                     take_price = entry_price-((entry_price * take_profit)/100)
@@ -101,6 +145,9 @@ while True:
                         print('MODIFYING TAKE PROFIT')
                         side = positions[0]['positionSide']
                         qty = float(positions[0]['positionAmt'])
+                        if qty == 0.0 :
+                           qty = float(positions[1]['positionAmt'])
+                           side = positions[1]['positionSide']
                         order_id = set_take_profit(symbol, take_price, side, qty)
                         price_position = entry_price
                         print('TAKE PROFIT ORDER WAS SUCCESS')
@@ -109,6 +156,8 @@ while True:
                 state = False
                 price_position = 0
                 order_id = ''
+                cancel_all_orders(symbol)
+                break
 
         else:
             tick = input('ENTER THE TICK YOU WANT TO TRADE: ').upper()
@@ -118,7 +167,7 @@ while True:
                 if take_profit != '':
                     # Open Positions
                     positions = client.futures_position_information(symbol=symbol)
-                    if len(positions) > 0:
+                    if float(positions[0]['entryPrice']) != 0.0 or float(positions[1]['entryPrice']) != 0.0:
                         print('OPEN POSITION IN ' + symbol)
                         state = True
                     else:
