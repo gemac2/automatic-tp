@@ -44,9 +44,9 @@ def set_price_for_exchanges(currency_name, buyback_price):
         price = "{:.3f}".format(buyback_price)
     elif currency_name in ["AMBUSDT", "GALAUSDT", "XRPUSDT", "XVGUSDT", "NOTUSDT", "JASMYUSDT", "KEYUSDT", "TLMUSDT", "CKBUSDT", "HOTUSDT", "INJUSDT", "MEWUSDT", "TURBOUSDT"]:
         price = "{:.6f}".format(buyback_price)
-    elif currency_name in ["1000FLOKIUSDT", "VETUSDT", "STMXUSDT", "1000FLOKIUSDT", "LINAUSDT", "OMUSDT", "KASUSDT", "1000RATSUSDT", "RIFUSDT", "1000LUNCUSDT", "CFXUSDT", "ONGUSDT", "1000RATSUSDT", "1000LUNCUSDT", "TOKENUSDT", "ASTRUSDT", "OMUSDT"]:
+    elif currency_name in ["1000FLOKIUSDT", "VETUSDT", "STMXUSDT", "1000FLOKIUSDT", "LINAUSDT", "OMUSDT", "KASUSDT", "1000RATSUSDT", "RIFUSDT", "1000LUNCUSDT", "CFXUSDT", "ONGUSDT", "1000RATSUSDT", "1000LUNCUSDT", "TOKENUSDT", "ASTRUSDT", "OMUSDT", "ALTUSDT"]:
         price = "{:.5f}".format(buyback_price)
-    elif currency_name in ["LEVERUSDT", "1000PEPEUSDT", "SPELLUSDT"]:
+    elif currency_name in ["LEVERUSDT", "1000PEPEUSDT", "SPELLUSDT", "1000SATSUSDT"]:
         price = "{:.7f}".format(buyback_price)
     else:
         price = "{:.4f}".format(buyback_price)
