@@ -38,15 +38,15 @@ def set_price_for_exchanges(currency_name, buyback_price):
     price = ""
     if currency_name in ["BTCUSDT", "NMRUSDT", "TRBUSDT", "NEOUSDT"]:
         price = "{:.1f}".format(buyback_price)
-    elif currency_name in ["ETHUSDT", "UNFIUSDT", "METISUSDT"]:
+    elif currency_name in ["ETHUSDT", "UNFIUSDT", "METISUSDT", "ZECUSDT"]:
         price = "{:.2f}".format(buyback_price)
-    elif currency_name in ["LPTUSDT", "LINKUSDT", "ETHFIUSDT", "ENSUSDT", "AUCTIONUSDT", "EOSUSDT", "ALICEUSDT", "UNIUSDT", "FILUSDT", "UMAUSDT", "OMNIUSDT", "IOUSDT", "AVAXUSDT", "ORDIUSDT", "ARUSDT", "ZROUSDT", "ZENUSDT", "BONDUSDT"]:
+    elif currency_name in ["LPTUSDT", "LINKUSDT", "ETHFIUSDT", "ENSUSDT", "AUCTIONUSDT", "EOSUSDT", "ALICEUSDT", "UNIUSDT", "FILUSDT", "UMAUSDT", "OMNIUSDT", "IOUSDT", "AVAXUSDT", "ORDIUSDT", "ARUSDT", "ZROUSDT", "ZENUSDT", "BONDUSDT", "SOLUSDT", "BALUSDT", "NEARUSDT", "SCRUSDT", "XTZUSDT", "ORCAUSDT", "RENDERUSDT"]:
         price = "{:.3f}".format(buyback_price)
-    elif currency_name in ["AMBUSDT", "GALAUSDT", "XRPUSDT", "XVGUSDT", "NOTUSDT", "JASMYUSDT", "KEYUSDT", "TLMUSDT", "CKBUSDT", "HOTUSDT", "INJUSDT", "MEWUSDT", "TURBOUSDT"]:
+    elif currency_name in ["AMBUSDT", "XVGUSDT", "NOTUSDT", "JASMYUSDT", "KEYUSDT", "TLMUSDT", "CKBUSDT", "HOTUSDT", "INJUSDT", "MEWUSDT", "TURBOUSDT", "REEFUSDT", "HMSTRUSDT"]:
         price = "{:.6f}".format(buyback_price)
-    elif currency_name in ["1000FLOKIUSDT", "VETUSDT", "STMXUSDT", "1000FLOKIUSDT", "LINAUSDT", "OMUSDT", "KASUSDT", "1000RATSUSDT", "RIFUSDT", "1000LUNCUSDT", "CFXUSDT", "ONGUSDT", "1000RATSUSDT", "1000LUNCUSDT", "TOKENUSDT", "ASTRUSDT", "OMUSDT", "ALTUSDT"]:
+    elif currency_name in ["1000FLOKIUSDT", "VETUSDT", "STMXUSDT", "1000FLOKIUSDT", "LINAUSDT", "OMUSDT", "KASUSDT", "1000RATSUSDT", "RIFUSDT", "1000LUNCUSDT", "CFXUSDT", "ONGUSDT", "1000RATSUSDT", "1000LUNCUSDT", "TOKENUSDT", "ASTRUSDT", "OMUSDT", "ALTUSDT", "ORBSUSDT", "TUSDT", "ALPACAUSDT", "SUNUSDT", "VIDTUSDT", "QUICKUSDT", "GALAUSDT", "FIOUSDT", "WOOUSDT", "CELRUSDT"]:
         price = "{:.5f}".format(buyback_price)
-    elif currency_name in ["LEVERUSDT", "1000PEPEUSDT", "SPELLUSDT", "1000SATSUSDT"]:
+    elif currency_name in ["LEVERUSDT", "1000PEPEUSDT", "SPELLUSDT", "1000SATSUSDT", "DOGSUSDT", "1MBABYDOGEUSDT"]:
         price = "{:.7f}".format(buyback_price)
     else:
         price = "{:.4f}".format(buyback_price)
